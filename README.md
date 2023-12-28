@@ -43,16 +43,17 @@ You can directly call a particular template as per the requirement. for example:
   # passing the parameters
   - template: ContainerDeploymentByHelmOnAKS.yaml
     parameters:
-      dockerImageTag: ${{ parameters.dockerImageTag }}  
-      azureSubscription: ${{ parameters.azureSubscription }}  
+      deploymentType: ${{ parameters.deploymentType}}
+      dockerImageTag: ${{ parameters.dockerImageTag }}
+      azureSubscription: ${{ parameters.azureSubscription }}
       resourceGroup: ${{ parameters.resourceGroup }}  
-      kubernetesName: ${{ parameters.kubernetesName }}                 
+      kubernetesName: ${{ parameters.kubernetesName }}
       helmRelease: ${{ parameters.helmRelease }}             
       helmChart: ${{ parameters.helmChart }}            
       maxReleaseHistorys: ${{ parameters.maxReleaseHistorys }}                 
       namespace: ${{ parameters.namespace }}
-      helmValuesFile: ${{ parameters.helmValuesFile}}
-      helmChartsDirLocation: ${{ parameters.helmChartsDirLocation }}
+      helmValuesFile: ${{ parameters.helmValuesFile }}
+      imageRepository: ${{ parameters.imageRepository }}
         
   
 Make sure to adjust the repository name, branch name, and parameter values according to your project's requirements.
