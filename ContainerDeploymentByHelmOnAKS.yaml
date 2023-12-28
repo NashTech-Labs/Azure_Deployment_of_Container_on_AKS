@@ -1,0 +1,53 @@
+parameters:
+  - name: dockerImageTag
+    type: string
+    default: ''
+
+  - name: azureSubscription
+    type: string
+    default: ''
+    
+  - name: resourceGroup
+    type: string
+    default: ''
+
+  - name: kubernetesName
+    type: string
+    default: ''
+
+  - name: helmRelease
+    type: string
+    default: ''  
+
+  - name: helmChart
+    type: string
+    default: '' 
+
+  - name: namespace
+    type: string
+    default: ''
+
+  - name: maxReleaseHistorys
+    type: string
+    default: ''
+
+  - name: helmValuesFile
+    type: string
+    default: ''
+
+steps:   
+- bash: |
+    echo ${{ parameters.dockerImageTag }}
+  displayName: Printing Docker Tag
+- checkout: self
+- task: AzureCLI@2
+  displayName: Helm Upgrade On AKS
+  inputs:
+    azureSubscription: ${{ parameters.azureSubscription }} 
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az aks get-credentials --resource-group ${{ parameters.resourceGroup }} --name ${{ parameters.kubernetesName }}
+      DOCKER_TAG=${{ parameters.dockerImageTag }}
+      helm upgrade --install ${{ parameters.helmRelease }} ${{ parameters.helmChart }} --namespace ${{ parameters.namespace }} --set image.tag=$DOCKER_TAG --set labels.version=$DOCKER_TAG --description "Upgrading to $DOCKER_TAG for $BUILD_SOURCEVERSIONMESSAGE" --history-max ${{ parameters.maxReleaseHistorys }} --atomic -f ${{ parameters.helmChart }}${{ parameters.helmValuesFile }}
+    addSpnToEnvironment: true
